@@ -43,15 +43,16 @@ regd_users.post("/login", (req,res) => {
 
   // Authenticate user
   if (authenticatedUser(username, password)) {
-  // Generate JWT access token
+    // Generate JWT access token
     let accessToken = jwt.sign({
       data: password
     }, 'access', { expiresIn: 60 * 60 });
 
-  // Store access token and username in session
-  req.session.authorization = {
-    accessToken, username
-  }
+    // Store access token and username in session
+    req.session.authorization = {
+      accessToken, username
+    }
+    
     return res.status(200).send("User successfully logged in");
   } else {
     return res.status(208).json({ message: "Invalid Login. Check username and password" });
@@ -60,8 +61,9 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  console.log(req.session.user);  
+  books[req.params.isbn].reviews[req.session.user] = req.body.review;
+  return res.status(300).json(books[req.params.isbn]);
 });
 
 module.exports.authenticated = regd_users;

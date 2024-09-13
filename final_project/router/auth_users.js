@@ -33,6 +33,7 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
+
   const username = req.body.username;
   const password = req.body.password;
 
@@ -61,10 +62,16 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  console.log(req.session.user);  
-  books[req.params.isbn].reviews[req.session.user] = req.body.review;
+  books[req.params.isbn].reviews[req.session.authorization['username']] = req.body.review;
   return res.status(300).json(books[req.params.isbn]);
 });
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => { 
+    books[req.params.isbn].reviews[req.session.authorization['username']] = req.body.review;
+  return res.status(300).json(books[req.params.isbn]);
+});
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
